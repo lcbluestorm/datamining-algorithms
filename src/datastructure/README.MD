@@ -22,3 +22,8 @@
 *3. insert a item to heap if the value of the item is upper than the value of heap's root for min-heap and conversely for max-heap*
 
     maxHeap.InsertValue(13)
+    
+*4. get the maximum item in min-heap(minimun item for max-heap)*
+
+    maxHeap.FindBottom()
+    
