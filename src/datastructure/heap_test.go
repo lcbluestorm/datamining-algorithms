@@ -18,7 +18,7 @@ func TestHeap(t *testing.T) {
 	minHeap := NewMinHeap(heap1)
 	index1, value1 := minHeap.FindBottom()
 	fmt.Println("%s,%s,%s", minHeap, index1, value1)
-	//minHeap.Add(1)
+	minHeap.Add(1)
 	minHeap.InsertValue(16.8)
 	fmt.Println("%s,%s,%s", minHeap, index1, value1)
 }
