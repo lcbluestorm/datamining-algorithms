@@ -1,9 +1,13 @@
 # Introduction
+
     some data structure for the mining algorithms.
     
 # Heap
+
     It contains max-heap and min-heap which supports float/int. And the heap is mainly used for the top k storage. 
+    
 ## usage
+
 1. create a heap 
 
     maxheap := []interface{}{1.3, 3.3, 4.3, 5.3, 8.3, 9.3} 
