@@ -9,11 +9,19 @@ const (
 	MINHEAP = "minHeap"
 )
 
+type Item struct {
+	value interface{}
+	label interface{}
+}
+
 type Heap struct {
 	heap []interface{}
 	attr string
 }
 
+func NewItem(value, label interface{}) Item {
+	return Item{value: value, label: label}
+}
 func NewMaxHeap(heap []interface{}) Heap {
 	buildMaxHeap(heap)
 	return Heap{heap: heap, attr: MAXHEAP}
@@ -24,8 +32,33 @@ func NewMinHeap(heap []interface{}) Heap {
 	return Heap{heap: heap, attr: MINHEAP}
 }
 
+func (h Heap) GetSize() int {
+	return len(h.heap)
+}
+
+func (h Heap) GetRoot() interface{} {
+	if len(h.heap) == 0 {
+		return nil
+	}
+	return h.heap[0]
+}
+
+func (h Heap) GetValues() []interface{} {
+	size = len(h.heap)
+	values := make([]interface{}, size)
+	copy(values, h.heap)
+	return values
+}
+
+func (h Heap) GetAttr() string {
+	return h.attr
+}
+
 func (h Heap) FindBottom() (index int, value interface{}) {
 	size := len(h.heap)
+	if size == 0 {
+		return -1, nil
+	}
 	startIndex := size/2 + 1
 	max := toFloat64(h.heap[startIndex-1])
 	min := max
@@ -53,26 +86,28 @@ func (h Heap) FindBottom() (index int, value interface{}) {
 	return resultIndex, resultValue
 }
 
-func (h *Heap) InsertValue(value interface{}) error {
+func (h *Heap) InsertValue(value interface{}) bool {
 	size := len(h.heap)
 	if size == 0 {
 		h.heap = append(h.heap, value)
-		return nil
+		return true
 	}
 	if h.attr == MAXHEAP {
 		if toFloat64(value) < toFloat64(h.heap[0]) {
 			h.heap[0] = value
 			adjustMaxHeapDown(h.heap, 1, size)
+			return true
 		}
 	} else if h.attr == MINHEAP {
 		if toFloat64(value) > toFloat64(h.heap[0]) {
 			h.heap[0] = value
 			adjustMinHeapDown(h.heap, 1, size)
+			return true
 		}
 	} else {
 		panic("heap type error(not maxHeap/minHeap)")
 	}
-	return nil
+	return false
 }
 
 // add a value to the heap
@@ -176,7 +211,14 @@ func toFloat64(i interface{}) float64 {
 	}
 	value := reflect.ValueOf(i)
 	var result float64
-	if value.Kind() == reflect.Float64 || value.Kind() == reflect.Float32 {
+	var k = value.Kind()
+	if k == reflect.Struct {
+		ii := i.(Item)
+		v := ii.value
+		value = reflect.ValueOf(v)
+		k = value.Kind()
+	}
+	if k == reflect.Float64 || k == reflect.Float32 {
 		result = value.Float()
 	} else {
 		result = float64(value.Int())
