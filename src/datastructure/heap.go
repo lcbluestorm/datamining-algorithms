@@ -10,8 +10,8 @@ const (
 )
 
 type Item struct {
-	value interface{}
 	item  interface{}
+	value interface{}
 }
 
 type Heap struct {
@@ -19,8 +19,16 @@ type Heap struct {
 	attr string
 }
 
-func NewItem(value, item interface{}) Item {
-	return Item{value: value, item: item}
+func NewItem(item, value interface{}) Item {
+	return Item{item: item, value: value}
+}
+
+func (item Item) GetItem() interface{} {
+	return item.item
+
+}
+func (item Item) GetValue() interface{} {
+	return item.value
 }
 func NewMaxHeap(heap []interface{}) Heap {
 	buildMaxHeap(heap)
