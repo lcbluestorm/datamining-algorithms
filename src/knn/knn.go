@@ -5,32 +5,33 @@ import (
 )
 
 type KnnClassifier struct {
-	dataSet *[]*Model
+	dataSet []*Model
 	k       int
 }
 
-func NewKnnClassifier(dataSet *[]*Model, k int) KnnClassifier {
+func NewKnnClassifier(dataSet []*Model, k int) KnnClassifier {
 	return KnnClassifier{dataSet: dataSet, k: k}
 }
 
 func (knn KnnClassifier) Classify(m *Model) string {
 
-	maxHeap := datastructure.NewMaxHeap(interface{})
+	heap := []interface{}{}
+	maxHeap := datastructure.NewMaxHeap(heap)
 	for i, model := range knn.dataSet {
 		distance := m.GetDistance(*model)
+		item := datastructure.NewItem(distance, model)
 		if maxHeap.GetSize() < knn.k {
-			item := datastructure.NewItem(distance, model)
 			maxHeap.Add(item)
 		} else {
-			maxHeap.InsertValue(distance, model)
+			maxHeap.InsertValue(item)
 		}
 	}
 	//statistic the num of labels
 	values := maxHeap.GetValues()
 	statics := make(map[string]int, knn.k)
 	for _, value := range values {
-		v := value.(Item)
-		item := v.item
+		v := value.(datastructure.Item)
+		item := v.GetItem()
 		label := item.GetLabel()
 		vv, ok := statics[label]
 		if ok {
