@@ -1,9 +1,7 @@
 package knn
 
 import (
-	"../datastructure"
-
-	"fmt"
+	"github.com/lcbluestorm/datamining-algorithms/src/datastructure"
 )
 
 type KnnClassifier struct {
@@ -12,13 +10,12 @@ type KnnClassifier struct {
 }
 
 func NewKnnClassifier(dataSet *[]*Model, k int) KnnClassifier {
-	return KnnClassifier{dataSet: data, k: k}
+	return KnnClassifier{dataSet: dataSet, k: k}
 }
 
 func (knn KnnClassifier) Classify(m *Model) string {
 
 	maxHeap := datastructure.NewMaxHeap(interface{})
-	var label string
 	for i, model := range knn.dataSet {
 		distance := m.GetDistance(*model)
 		if maxHeap.GetSize() < knn.k {
@@ -28,11 +25,29 @@ func (knn KnnClassifier) Classify(m *Model) string {
 			maxHeap.InsertValue(distance, model)
 		}
 	}
+	//statistic the num of labels
 	values := maxHeap.GetValues()
-	counts := make(map[string]int, knn.k)
+	statics := make(map[string]int, knn.k)
 	for _, value := range values {
 		v := value.(Item)
+		item := v.item
+		label := item.GetLabel()
+		vv, ok := statics[label]
+		if ok {
+			statics[label]++
+		} else {
+			statics[label] = 1
+		}
+
 	}
 
-	return label
+	// find the maxinum label's num
+	max := 0
+	var result string
+	for key, value := range statics {
+		if value > max {
+			result = key
+		}
+	}
+	return result
 }

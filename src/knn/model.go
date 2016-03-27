@@ -17,6 +17,10 @@ func NewModel(attr1, attr2 float32, label string) *Model {
 		label: label}
 }
 
+func (m Model) GetLabel() string {
+	return m.label
+}
+
 func (m Model) GetDistance(m1 Model) float32 {
 	r1 := math.Pow(float64((m.attr1 - m1.attr1)), 2)
 	r2 := math.Pow(float64((m.attr2 - m1.attr2)), 2)

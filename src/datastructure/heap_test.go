@@ -2,7 +2,7 @@ package datastructure
 
 import (
 	"fmt"
-	"reflect"
+	//	"reflect"
 	"testing"
 )
 
@@ -16,15 +16,16 @@ func TestHeap(t *testing.T) {
 	//maxHeap.InsertValue(5)
 	fmt.Println("%s,%s,%s,%s", maxHeap, index, value, maxHeap.GetSize())
 
-	mapTest := make(map[interface{}]int, 5)
-	i := 1
-	mapTest[&i] = 2
-	//fmt.Println("%s", mapTest)
-	var item interface{}
-	item = Item{1, "a"}
-	v := reflect.ValueOf(item)
-	ii := item.(Item)
-	fmt.Println("%s,%s", v, ii.value)
+	test := maxHeap.GetValues()
+	test[0] = "aaa"
+	fmt.Println("%s", maxHeap)
+	fmt.Println("%s", test)
+
+	//var item interface{}
+	//item = Item{1, "a"}
+	//v := reflect.ValueOf(item)
+	//ii := item.(Item)
+	//fmt.Println("%s,%s", v, ii.value)
 
 	//	heap1 := []interface{}{6.8, 1.3, 3.3, 4.3, 5.3, 8.3, 9.3}
 	//	minHeap := NewMinHeap(heap1)

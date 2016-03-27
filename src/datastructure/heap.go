@@ -11,7 +11,7 @@ const (
 
 type Item struct {
 	value interface{}
-	label interface{}
+	item  interface{}
 }
 
 type Heap struct {
@@ -19,8 +19,8 @@ type Heap struct {
 	attr string
 }
 
-func NewItem(value, label interface{}) Item {
-	return Item{value: value, label: label}
+func NewItem(value, item interface{}) Item {
+	return Item{value: value, item: item}
 }
 func NewMaxHeap(heap []interface{}) Heap {
 	buildMaxHeap(heap)
@@ -44,7 +44,7 @@ func (h Heap) GetRoot() interface{} {
 }
 
 func (h Heap) GetValues() []interface{} {
-	size = len(h.heap)
+	size := len(h.heap)
 	values := make([]interface{}, size)
 	copy(values, h.heap)
 	return values
