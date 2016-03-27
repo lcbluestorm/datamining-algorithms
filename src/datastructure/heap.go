@@ -1,6 +1,7 @@
 package datastructure
 
 import (
+	//	"fmt"
 	"reflect"
 )
 
@@ -22,14 +23,17 @@ type Heap struct {
 func NewItem(item, value interface{}) Item {
 	return Item{item: item, value: value}
 }
-
 func (item Item) GetItem() interface{} {
 	return item.item
 
 }
+func (item *Item) SetValue(v interface{}) {
+	item.value = v
+}
 func (item Item) GetValue() interface{} {
 	return item.value
 }
+
 func NewMaxHeap(heap []interface{}) Heap {
 	buildMaxHeap(heap)
 	return Heap{heap: heap, attr: MAXHEAP}
