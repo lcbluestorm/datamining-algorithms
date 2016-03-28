@@ -4,29 +4,36 @@ import (
 	"math"
 )
 
-type Model struct {
+type Model interface {
+	GetLabel() string
+	SetLabel(label string)
+	GetDistance(m1 Model) float64
+}
+
+type SimpleModel struct {
 	attr1 float64
 	attr2 float64
 	label string
 }
 
-func NewModel(attr1, attr2 float64, label string) *Model {
-	return &Model{
+func NewSimpleModel(attr1, attr2 float64, label string) *SimpleModel {
+	return &SimpleModel{
 		attr1: attr1,
 		attr2: attr2,
 		label: label}
 }
 
-func (m Model) GetLabel() string {
+func (m SimpleModel) GetLabel() string {
 	return m.label
 }
-func (m *Model) SetLabel(label string) {
+func (m *SimpleModel) SetLabel(label string) {
 	m.label = label
 }
 
-func (m Model) GetDistance(m1 Model) float64 {
-	r1 := math.Pow((m.attr1 - m1.attr1), 2)
-	r2 := math.Pow((m.attr2 - m1.attr2), 2)
+func (m SimpleModel) GetDistance(m1 Model) float64 {
+	simpleModel1 := m1.(*SimpleModel)
+	r1 := math.Pow((m.attr1 - simpleModel1.attr1), 2)
+	r2 := math.Pow((m.attr2 - simpleModel1.attr2), 2)
 	r := math.Sqrt(r1 + r2)
 	return r
 }

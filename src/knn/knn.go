@@ -7,11 +7,11 @@ import (
 )
 
 type KnnClassifier struct {
-	dataSet []*Model
+	dataSet []Model
 	k       int
 }
 
-func NewKnnClassifier(dataSet []*Model, k int) KnnClassifier {
+func NewKnnClassifier(dataSet []Model, k int) KnnClassifier {
 	return KnnClassifier{dataSet: dataSet, k: k}
 }
 
@@ -20,7 +20,7 @@ func (knn KnnClassifier) Classify(m Model) string {
 	heap := []interface{}{}
 	maxHeap := datastructure.NewMaxHeap(heap)
 	for _, model := range knn.dataSet {
-		distance := m.GetDistance(*model)
+		distance := m.GetDistance(model)
 		item := datastructure.NewItem(model, distance)
 		if maxHeap.GetSize() < knn.k {
 			maxHeap.Add(item)
@@ -28,13 +28,13 @@ func (knn KnnClassifier) Classify(m Model) string {
 			maxHeap.InsertValue(item)
 		}
 	}
-	//statistic the num of labels
+	//statistic the counts of labels
 	values := maxHeap.GetValues()
 	statics := make(map[string]int, knn.k)
 	for _, value := range values {
 		v := value.(datastructure.Item)
 		item := v.GetItem()
-		ii := item.(*Model)
+		ii := item.(Model)
 		label := ii.GetLabel()
 		_, ok := statics[label]
 		if ok {
@@ -44,8 +44,7 @@ func (knn KnnClassifier) Classify(m Model) string {
 		}
 
 	}
-
-	// find the maxinum label's num
+	// find the maxinum(counts) label
 	max := 0
 	var result string
 	for key, value := range statics {
