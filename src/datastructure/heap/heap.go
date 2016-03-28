@@ -32,6 +32,9 @@ func (simpleItem SimpleItem) Less(i Item) bool {
 	ii := i.(SimpleItem)
 	return simpleItem.value < ii.value
 }
+func (simpleItem SimpleItem) GetItem() interface{} {
+	return simpleItem.item
+}
 func NewMaxHeap(heap []Item) Heap {
 	tmpHeap := make([]Item, len(heap))
 	copy(tmpHeap, heap)
