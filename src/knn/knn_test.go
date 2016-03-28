@@ -16,6 +16,5 @@ func TestKnn(t *testing.T) {
 
 	knnClassifier := NewKnnClassifier(dataSet, k)
 
-	//fmt.Println("%s", knnClassifier)
 	fmt.Println("%s", knnClassifier.Classify(newModel))
 }

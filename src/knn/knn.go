@@ -18,10 +18,10 @@ func NewKnnClassifier(dataSet []Model, k int) KnnClassifier {
 func (knn KnnClassifier) Classify(m Model) string {
 
 	h := make([]heap.Item, 0)
-	maxHeap := datastructure.NewMaxHeap(h)
+	maxHeap := heap.NewMaxHeap(h)
 	for _, model := range knn.dataSet {
 		distance := m.GetDistance(model)
-		item := datastructure.NewSimpleItem(model, float64(distance))
+		item := heap.NewSimpleItem(model, float64(distance))
 		if maxHeap.GetSize() < knn.k {
 			maxHeap.Add(item)
 		} else {
@@ -32,7 +32,7 @@ func (knn KnnClassifier) Classify(m Model) string {
 	items := maxHeap.GetItems()
 	statics := make(map[string]int, knn.k)
 	for _, value := range items {
-		v := value.(datastructure.SimpleItem)
+		v := value.(heap.SimpleItem)
 		item := v.GetItem()
 		ii := item.(Model)
 		label := ii.GetLabel()
