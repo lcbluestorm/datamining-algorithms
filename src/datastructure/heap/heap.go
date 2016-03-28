@@ -1,4 +1,4 @@
-package datastructure
+package heap
 
 import (
 	//	"fmt"
