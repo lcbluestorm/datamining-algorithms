@@ -3,7 +3,7 @@ package knn
 import (
 	//	"fmt"
 
-	"github.com/lcbluestorm/datamining-algorithms/src/datastructure"
+	"github.com/lcbluestorm/datamining-algorithms/src/datastructure/heap"
 )
 
 type KnnClassifier struct {
@@ -17,11 +17,11 @@ func NewKnnClassifier(dataSet []Model, k int) KnnClassifier {
 
 func (knn KnnClassifier) Classify(m Model) string {
 
-	heap := []interface{}{}
-	maxHeap := datastructure.NewMaxHeap(heap)
+	h := []heap.Item{}
+	maxHeap := datastructure.NewMaxHeap(h)
 	for _, model := range knn.dataSet {
 		distance := m.GetDistance(model)
-		item := datastructure.NewItem(model, distance)
+		item := datastructure.NewSimpleItem(model, float64(distance))
 		if maxHeap.GetSize() < knn.k {
 			maxHeap.Add(item)
 		} else {
@@ -29,10 +29,10 @@ func (knn KnnClassifier) Classify(m Model) string {
 		}
 	}
 	//statistic the counts of labels
-	values := maxHeap.GetValues()
+	items := maxHeap.GetItems()
 	statics := make(map[string]int, knn.k)
-	for _, value := range values {
-		v := value.(datastructure.Item)
+	for _, value := range items {
+		v := value.(datastructure.SimpleItem)
 		item := v.GetItem()
 		ii := item.(Model)
 		label := ii.GetLabel()
