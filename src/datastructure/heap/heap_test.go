@@ -18,9 +18,11 @@ func TestHeap(t *testing.T) {
 	maxHeap := NewMaxHeap(heap)
 	//	minHeap := NewMinHeap(heap)
 	var ii1 Float
-	ii1 = 1
-	//maxHeap.Add(ii1)
-	maxHeap.InsertValue(ii1)
+	ii1 = 0
+	maxHeap.Add(ii1)
+	fmt.Println("%s", maxHeap)
+	maxHeap.Delete(2)
+	//maxHeap.InsertValue(ii1)
 	index, value := maxHeap.FindBottom()
 	fmt.Println("%s,%s,%s", maxHeap, index, value)
 

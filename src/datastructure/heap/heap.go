@@ -35,6 +35,7 @@ func (simpleItem SimpleItem) Less(i Item) bool {
 func (simpleItem SimpleItem) GetItem() interface{} {
 	return simpleItem.item
 }
+
 func NewMaxHeap(heap []Item) Heap {
 	tmpHeap := make([]Item, len(heap))
 	copy(tmpHeap, heap)
@@ -77,30 +78,24 @@ func (h Heap) FindBottom() (index int, value Item) {
 		return -1, nil
 	}
 	startIndex := size/2 + 1
-	max := h.heap[startIndex-1]
-	min := max
+	max, min := h.heap[startIndex-1], h.heap[startIndex-1]
 	maxIndex, minIndex := startIndex-1, startIndex-1
 	for i := startIndex + 1; i <= size; i++ {
 		cur := h.heap[i-1]
 		if max.Less(cur) {
-			max = cur
-			maxIndex = i - 1
-
+			max, maxIndex = cur, i-1
 		}
 		if cur.Less(min) {
-			min = cur
-			minIndex = i - 1
+			min, minIndex = cur, i-1
 		}
 	}
 	var resultIndex int
-	var resultValue Item
 	if h.attr == MAXHEAP {
 		resultIndex = minIndex
 	} else if h.attr == MINHEAP {
 		resultIndex = maxIndex
 	}
-	resultValue = h.heap[resultIndex]
-	return resultIndex, resultValue
+	return resultIndex, h.heap[resultIndex]
 }
 
 func (h *Heap) InsertValue(value Item) bool {
@@ -111,22 +106,37 @@ func (h *Heap) InsertValue(value Item) bool {
 		h.heap = append(h.heap, value)
 		return true
 	}
-	if h.attr == MAXHEAP {
-		if value.Less(h.heap[0]) {
-			h.heap[0] = value
-			adjustMaxHeapDown(h.heap, 1, size)
-			return true
-		}
-	} else if h.attr == MINHEAP {
-		if h.heap[0].Less(value) {
-			h.heap[0] = value
-			adjustMinHeapDown(h.heap, 1, size)
-			return true
-		}
+	if h.attr == MAXHEAP && value.Less(h.heap[0]) {
+		h.heap[0] = value
+		adjustMaxHeapDown(h.heap, 1, size)
+		return true
+	} else if h.attr == MINHEAP && h.heap[0].Less(value) {
+		h.heap[0] = value
+		adjustMinHeapDown(h.heap, 1, size)
+		return true
 	} else {
 		panic("heap type error(not maxHeap/minHeap)")
 	}
 	return false
+}
+func (h *Heap) Delete(i int) {
+	if len(h.heap) == 0 {
+		return
+	} else if len(h.heap) == 1 {
+		if i == 0 {
+			h.heap = make([]Item, 0)
+			return
+		}
+		panic("index error in Delete()")
+	}
+	h.Lock()
+	defer h.Unlock()
+	h.heap = append(h.heap[:i], h.heap[i+1:]...)
+	if h.attr == MAXHEAP {
+		buildMaxHeap(h.heap)
+	} else if h.attr == MINHEAP {
+		buildMinHeap(h.heap)
+	}
 }
 
 // add a value to the heap
@@ -143,6 +153,7 @@ func (h *Heap) Add(value Item) {
 	}
 }
 
+// TODD:merge buildMaxHeap and buildMinHeap
 ///////////////////////////////////////////////////////
 /////////////// build max heap ////////////////////////
 func buildMaxHeap(array []Item) {
@@ -155,16 +166,13 @@ func buildMaxHeap(array []Item) {
 func adjustMaxHeapDown(array []Item, start, end int) {
 	tmp := array[start-1]
 	for i := 2 * start; i <= end; i *= 2 {
-		if i < end {
-			if array[i-1].Less(array[i]) {
-				i++
-			}
+		if i < end && array[i-1].Less(array[i]) {
+			i++
 		}
 		if array[i-1].Less(tmp) {
 			break
 		}
-		array[start-1] = array[i-1]
-		start = i
+		array[start-1], start = array[i-1], i
 	}
 	array[start-1] = tmp
 }
@@ -192,16 +200,13 @@ func buildMinHeap(array []Item) {
 func adjustMinHeapDown(array []Item, start, end int) {
 	tmp := array[start-1]
 	for i := 2 * start; i <= end; i *= 2 {
-		if i < end {
-			if array[i].Less(array[i-1]) {
-				i++
-			}
+		if i < end && array[i].Less(array[i-1]) {
+			i++
 		}
 		if tmp.Less(array[i-1]) {
 			break
 		}
-		array[start-1] = array[i-1]
-		start = i
+		array[start-1], start = array[i-1], i
 	}
 	array[start-1] = tmp
 }
