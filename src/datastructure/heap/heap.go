@@ -114,8 +114,6 @@ func (h *Heap) InsertValue(value Item) bool {
 		h.heap[0] = value
 		adjustMinHeapDown(h.heap, 1, size)
 		return true
-	} else {
-		panic("heap type error(not maxHeap/minHeap)")
 	}
 	return false
 }
