@@ -11,7 +11,7 @@ type Distance interface {
 
 type KeansModel interface {
 	Distance
-	GetCenter(models []KeansModel) KeansModel
+	GetCenter(models *[]KeansModel) KeansModel
 }
 
 type SimpleKeansModel []float64
@@ -29,12 +29,12 @@ func (m SimpleKeansModel) GetDistance(d Distance) float64 {
 	return math.Sqrt(distance)
 }
 
-func (m SimpleKeansModel) GetCenter(models []KeansModel) KeansModel {
-	length := len(models)
+func (m SimpleKeansModel) GetCenter(models *[]KeansModel) KeansModel {
+	length := len(*models)
 	if length == 0 {
 		return nil
 	}
-	first := models[0].(SimpleKeansModel)
+	first := (*models)[0].(SimpleKeansModel)
 	size := len(first)
 	if size == 0 {
 		return nil
@@ -43,7 +43,7 @@ func (m SimpleKeansModel) GetCenter(models []KeansModel) KeansModel {
 	var center SimpleKeansModel = NewSimpleKeansModel(size)
 	for i := 0; i < size; i++ {
 		chs[i] = make(chan float64, 1)
-		sum(&models, i, chs[i])
+		sum(models, i, chs[i])
 	}
 	for j := 0; j < size; j++ {
 		sum := <-chs[j]
