@@ -1,7 +1,6 @@
 package kmeans
 
 import (
-	//	"fmt"
 	"math/rand"
 	"time"
 )
@@ -21,19 +20,30 @@ func NewKMeans(dataSet []KeansModel, k int) KMeans {
 	return KMeans{dataSet: dataSet, k: k}
 }
 
-func (kmeans KMeans) Clustering() map[int][]KeansModel {
+func (kmeans KMeans) Clustering() (map[int][]KeansModel, int) {
 	result := make(map[int][]KeansModel, kmeans.k)
-	kCenter := kmeans.RandomK()
-	capacity := kmeans.k / len(kmeans.dataSet)
+	var kCenter map[int]KeansModel
+	kCenter = kmeans.RandomK()
+	capacity := len(kmeans.dataSet) / kmeans.k
+	iters := 0
 	for {
+		iters++
+		// init k clusters
+		for j, _ := range kCenter {
+			result[j] = make([]KeansModel, 0, capacity)
+		}
+		// clustering each item
 		for _, item := range kmeans.dataSet {
-			for i := 0; i < kmeans.k; i++ {
-				result[i] = make([]KeansModel, 0, capacity)
-			}
-
 			var minDistance float64
 			var index int
+			var flag bool = true
 			for j, center := range kCenter {
+				if flag {
+					minDistance = item.GetDistance(center)
+					index = j
+					flag = false
+					continue
+				}
 				curDistance := item.GetDistance(center)
 				if curDistance < minDistance {
 					index, minDistance = j, curDistance
@@ -41,15 +51,32 @@ func (kmeans KMeans) Clustering() map[int][]KeansModel {
 			}
 			result[index] = append(result[index], item)
 		}
+		//recalculate the k-center
 		var tmp = kmeans.dataSet[0]
-		for i := 0; i < kmeans.k; i++ {
+		var newKCenter map[int]KeansModel = make(map[int]KeansModel, kmeans.k)
+		for key, value := range result {
+			newKCenter[key] = tmp.GetCenter(value)
 		}
-		var continu bool
-		if true {
+		var counts int = 0
+		for _, value1 := range newKCenter {
+			flag := false
+			for j, value2 := range kCenter {
+				if value1.Equal(value2) {
+					kCenter[j] = nil
+					flag = true
+					break
+				}
+			}
+			if !flag {
+				counts++
+			}
+		}
+		if counts == 0 {
 			break
 		}
+		kCenter = newKCenter
 	}
-	return result
+	return result, iters
 }
 
 func (kmeans KMeans) RandomK() map[int]KeansModel {

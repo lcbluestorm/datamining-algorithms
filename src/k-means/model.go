@@ -1,7 +1,6 @@
 package kmeans
 
 import (
-	//	"fmt"
 	"math"
 )
 
@@ -11,7 +10,8 @@ type Distance interface {
 
 type KeansModel interface {
 	Distance
-	GetCenter(models *[]KeansModel) KeansModel
+	GetCenter(models []KeansModel) KeansModel
+	Equal(model KeansModel) bool
 }
 
 type SimpleKeansModel []float64
@@ -28,13 +28,31 @@ func (m SimpleKeansModel) GetDistance(d Distance) float64 {
 	}
 	return math.Sqrt(distance)
 }
+func (m SimpleKeansModel) Equal(model KeansModel) bool {
+	if model == nil {
+		return false
+	}
+	simpleModel := model.(SimpleKeansModel)
+	modelSize := len(simpleModel)
+	mSize := len(m)
+	if mSize != modelSize {
+		return false
+	}
+	for i := 0; i < mSize; i++ {
+		if m[i] != simpleModel[i] {
+			return false
+		}
 
-func (m SimpleKeansModel) GetCenter(models *[]KeansModel) KeansModel {
-	length := len(*models)
+	}
+	return true
+
+}
+func (m SimpleKeansModel) GetCenter(models []KeansModel) KeansModel {
+	length := len(models)
 	if length == 0 {
 		return nil
 	}
-	first := (*models)[0].(SimpleKeansModel)
+	first := models[0].(SimpleKeansModel)
 	size := len(first)
 	if size == 0 {
 		return nil
@@ -43,20 +61,21 @@ func (m SimpleKeansModel) GetCenter(models *[]KeansModel) KeansModel {
 	var center SimpleKeansModel = NewSimpleKeansModel(size)
 	for i := 0; i < size; i++ {
 		chs[i] = make(chan float64, 1)
-		sum(models, i, chs[i])
+		go sum(models, i, chs[i])
 	}
 	for j := 0; j < size; j++ {
 		sum := <-chs[j]
+		//fmt.Println(sum)
 		center[j] = sum
 	}
 	return center
 }
 
-func sum(models *[]KeansModel, i int, ch chan float64) {
-	size := len(*models)
+func sum(models []KeansModel, i int, ch chan float64) {
+	size := len(models)
 	var sum float64
 	for j := 0; j < size; j++ {
-		model := (*models)[j]
+		model := models[j]
 		simpleModel := model.(SimpleKeansModel)
 		sum += simpleModel[i]
 	}
