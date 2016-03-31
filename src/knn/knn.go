@@ -7,15 +7,15 @@ import (
 )
 
 type KnnClassifier struct {
-	dataSet []Model
+	dataSet []KnnModel
 	k       int
 }
 
-func NewKnnClassifier(dataSet []Model, k int) KnnClassifier {
+func NewKnnClassifier(dataSet []KnnModel, k int) KnnClassifier {
 	return KnnClassifier{dataSet: dataSet, k: k}
 }
 
-func (knn KnnClassifier) Classify(m Model) string {
+func (knn KnnClassifier) Classify(m KnnModel) string {
 
 	h := make([]heap.Item, 0)
 	maxHeap := heap.NewMaxHeap(h)
@@ -34,7 +34,7 @@ func (knn KnnClassifier) Classify(m Model) string {
 	for _, value := range items {
 		v := value.(heap.SimpleItem)
 		item := v.GetItem()
-		ii := item.(Model)
+		ii := item.(KnnModel)
 		label := ii.GetLabel()
 		_, ok := statics[label]
 		if ok {

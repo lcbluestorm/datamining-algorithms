@@ -4,22 +4,20 @@ import (
 	"math"
 )
 
-type Model interface {
+type KnnModel interface {
 	GetLabel() string
 	SetLabel(label string)
-	GetDistance(m1 Model) float64
+	GetDistance(m1 KnnModel) float64
 }
 
 type SimpleModel struct {
-	attr1 float64
-	attr2 float64
+	data  []float64
 	label string
 }
 
-func NewSimpleModel(attr1, attr2 float64, label string) *SimpleModel {
+func NewSimpleModel(data []float64, label string) *SimpleModel {
 	return &SimpleModel{
-		attr1: attr1,
-		attr2: attr2,
+		data:  data,
 		label: label}
 }
 
@@ -30,10 +28,16 @@ func (m *SimpleModel) SetLabel(label string) {
 	m.label = label
 }
 
-func (m SimpleModel) GetDistance(m1 Model) float64 {
-	simpleModel1 := m1.(*SimpleModel)
-	r1 := math.Pow((m.attr1 - simpleModel1.attr1), 2)
-	r2 := math.Pow((m.attr2 - simpleModel1.attr2), 2)
-	r := math.Sqrt(r1 + r2)
-	return r
+func (m SimpleModel) GetDistance(m1 KnnModel) float64 {
+	simpleModel := m1.(*SimpleModel)
+	mData, m1Data := m.data, simpleModel.data
+	mDataSize, m1DataSize := len(mData), len(m1Data)
+	if mDataSize != m1DataSize {
+		panic("the size of two SimpleModel must be same")
+	}
+	var sum float64 = 0
+	for i, _ := range mData {
+		sum += math.Pow(mData[i]-m1Data[i], 2)
+	}
+	return math.Sqrt(sum)
 }
