@@ -1,11 +1,10 @@
 package knn
 
 import (
-	//"fmt"
 	"testing"
 )
 
 func TestParse(t *testing.T) {
-	p := NewFileParse("data.txt")
+	p := NewFileParse([]string{"data/data1.txt", "data/data2.txt"})
 	p.Parse()
 }
