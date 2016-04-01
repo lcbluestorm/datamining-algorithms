@@ -75,7 +75,7 @@ func parse(path string, ch chan []KnnModel) {
 					panic(err)
 				}
 			}
-			m := NewSimpleModel(data, label)
+			m := NewSimpleKnnModel(data, label)
 			result = append(result, m)
 		}
 	}

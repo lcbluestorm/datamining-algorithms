@@ -6,11 +6,11 @@ import (
 )
 
 type KMeans struct {
-	dataSet []KeansModel
+	dataSet []KmeansModel
 	k       int
 }
 
-func NewKMeans(dataSet []KeansModel, k int) KMeans {
+func NewKMeans(dataSet []KmeansModel, k int) KMeans {
 	if k < 1 {
 		panic("the value of k must be positive")
 	}
@@ -20,9 +20,9 @@ func NewKMeans(dataSet []KeansModel, k int) KMeans {
 	return KMeans{dataSet: dataSet, k: k}
 }
 
-func (kmeans KMeans) Clustering() (map[int][]KeansModel, int) {
-	result := make(map[int][]KeansModel, kmeans.k)
-	var kCenter map[int]KeansModel
+func (kmeans KMeans) Clustering() (map[int][]KmeansModel, int) {
+	result := make(map[int][]KmeansModel, kmeans.k)
+	var kCenter map[int]KmeansModel
 	kCenter = kmeans.RandomK()
 	capacity := len(kmeans.dataSet) / kmeans.k
 	iters := 0
@@ -30,7 +30,7 @@ func (kmeans KMeans) Clustering() (map[int][]KeansModel, int) {
 		iters++
 		// init k clusters
 		for j, _ := range kCenter {
-			result[j] = make([]KeansModel, 0, capacity)
+			result[j] = make([]KmeansModel, 0, capacity)
 		}
 		// clustering each item
 		for _, item := range kmeans.dataSet {
@@ -53,7 +53,7 @@ func (kmeans KMeans) Clustering() (map[int][]KeansModel, int) {
 		}
 		//recalculate the k-center
 		var tmp = kmeans.dataSet[0]
-		var newKCenter map[int]KeansModel = make(map[int]KeansModel, kmeans.k)
+		var newKCenter map[int]KmeansModel = make(map[int]KmeansModel, kmeans.k)
 		for key, value := range result {
 			newKCenter[key] = tmp.GetCenter(value)
 		}
@@ -79,9 +79,9 @@ func (kmeans KMeans) Clustering() (map[int][]KeansModel, int) {
 	return result, iters
 }
 
-func (kmeans KMeans) RandomK() map[int]KeansModel {
+func (kmeans KMeans) RandomK() map[int]KmeansModel {
 	size := len(kmeans.dataSet)
-	result := make(map[int]KeansModel, kmeans.k)
+	result := make(map[int]KmeansModel, kmeans.k)
 	for i := 0; i < kmeans.k; {
 		rand.Seed(time.Now().UnixNano())
 		index := rand.Int63n(int64(size))
