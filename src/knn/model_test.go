@@ -13,4 +13,11 @@ func TestModel(t *testing.T) {
 	if ret != 1 {
 		t.Errorf("ret=%s", ret)
 	}
+	if m1.GetLabel() != "a" {
+		t.Errorf("GetLabel() failed")
+	}
+	m1.SetLabel("bb")
+	if m1.GetLabel() != "bb" {
+		t.Errorf("ret=%s", ret)
+	}
 }

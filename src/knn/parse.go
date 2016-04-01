@@ -2,7 +2,6 @@ package knn
 
 import (
 	"bufio"
-	"fmt"
 	"os"
 	"strconv"
 	"strings"
@@ -34,16 +33,13 @@ func (f FileParse) Parse() []KnnModel {
 	for i := 0; i < size; i++ {
 		path := f.path[i]
 		chs[i] = make(chan []KnnModel, 1)
-		parse(path, chs[i])
+		go parse(path, chs[i])
 	}
 	for i := 0; i < size; i++ {
 		ret := <-chs[i]
 		if ret != nil {
 			result = append(result, ret...)
 		}
-	}
-	for _, value := range result {
-		fmt.Println(value)
 	}
 	return result
 }
