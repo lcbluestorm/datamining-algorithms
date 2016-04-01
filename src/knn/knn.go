@@ -1,7 +1,7 @@
 package knn
 
 import (
-	//	"fmt"
+	"fmt"
 
 	"github.com/lcbluestorm/datamining-algorithms/src/datastructure/heap"
 )
@@ -47,8 +47,10 @@ func (knn KnnClassifier) Classify(m KnnModel) string {
 	// find the maxinum(counts) label
 	max := 0
 	var result string
+	fmt.Println(statics)
 	for key, value := range statics {
 		if value > max {
+			max = value
 			result = key
 		}
 	}
