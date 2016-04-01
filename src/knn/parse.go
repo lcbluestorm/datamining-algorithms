@@ -64,7 +64,6 @@ func parse(path string, ch chan []KnnModel) {
 			if strings.TrimSpace(line) == "" {
 				continue
 			}
-			//      fmt.Println(i, line)
 			values := strings.Fields(line)
 			length := len(values) - 1
 			data := make([]float64, length)
@@ -80,6 +79,5 @@ func parse(path string, ch chan []KnnModel) {
 			result = append(result, m)
 		}
 	}
-
 	ch <- result
 }

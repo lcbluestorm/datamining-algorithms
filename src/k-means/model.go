@@ -65,7 +65,6 @@ func (m SimpleKeansModel) GetCenter(models []KeansModel) KeansModel {
 	}
 	for j := 0; j < size; j++ {
 		sum := <-chs[j]
-		//fmt.Println(sum)
 		center[j] = sum
 	}
 	return center

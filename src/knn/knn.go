@@ -1,8 +1,6 @@
 package knn
 
 import (
-	//	"fmt"
-
 	"github.com/lcbluestorm/datamining-algorithms/src/datastructure/heap"
 )
 
@@ -12,6 +10,10 @@ type KnnClassifier struct {
 }
 
 func NewKnnClassifier(dataSet []KnnModel, k int) KnnClassifier {
+	size := len(dataSet)
+	if size < k {
+		panic("the size of dataSet can't less than k")
+	}
 	return KnnClassifier{dataSet: dataSet, k: k}
 }
 
@@ -42,7 +44,6 @@ func (knn KnnClassifier) Classify(m KnnModel) string {
 		} else {
 			statics[label] = 1
 		}
-
 	}
 	// find the maxinum(counts) label
 	max := 0
