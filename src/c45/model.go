@@ -5,9 +5,6 @@ import ()
 type C45Model interface {
 	GetDecision() string
 	GetAttributes() []string
-
-	SetDecision(string)
-	SetAttributes([]string)
 }
 
 type SimpleC45Model struct {
@@ -15,8 +12,8 @@ type SimpleC45Model struct {
 	attributes []string
 }
 
-func NewSimpleC45Model(decision string, attributes []string) {
-	return SimpleC45Model{decision: decision, attributes: attributes}
+func NewSimpleC45Model(decision string, attributes []string) *SimpleC45Model {
+	return &SimpleC45Model{decision: decision, attributes: attributes}
 }
 func (m SimpleC45Model) GetDecision() string {
 	return m.decision

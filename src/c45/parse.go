@@ -3,7 +3,6 @@ package c45
 import (
 	"bufio"
 	"os"
-	"strconv"
 	"strings"
 )
 
@@ -37,6 +36,7 @@ func (f FileParse) Parse() []C45Model {
 	}
 	for i := 0; i < size; i++ {
 		ret := <-chs[i]
+
 		if ret != nil {
 			result = append(result, ret...)
 		}
@@ -66,7 +66,7 @@ func parse(path string, ch chan []C45Model) {
 			}
 			values := strings.Fields(line)
 			length := len(values) - 1
-			attributes, decision := value[:length], values[length]
+			attributes, decision := values[:length], values[length]
 			m := NewSimpleC45Model(decision, attributes)
 			result = append(result, m)
 		}
