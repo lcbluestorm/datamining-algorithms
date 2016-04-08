@@ -1,0 +1,2 @@
+attr1 attr2 attr3 decision1
+attr11 attr22 attr33 decision2
